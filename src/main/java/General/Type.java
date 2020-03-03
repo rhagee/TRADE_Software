@@ -91,7 +91,19 @@ public class Type
             }
         }
 
-        /*Facebook*/
+        /*KIJIJI*/
+        else if(typename.equals("Kijiji") || typename.equals("KIJIJI") || typename.equals("K"))
+        {
+            Document doc = Kijiji(research);
+            Elements names = doc.select("a.cta");
+            for(Element name : names)
+            {
+                items.add(name.html());
+            }
+        }
+
+
+        /*FACEBOOK*/
         else if(typename.equals("facebook") || typename.equals("Facebook") || typename.equals("FB") ||typename.equals("fb") || typename.equals("facebook marketplace") ||typename.equals("fb marketplace") || typename.equals("FACEBOOK"))
         {
             Document doc = Facebook(research);
@@ -125,7 +137,8 @@ public class Type
             for(int i=0;i<names.size() && i<prices.size();i++)
             {
                 String fix_price = prices.get(i).html().replace(".","").replace(",",".").replace("&nbsp;€","").replace("&nbsp;$","");
-                items.add(new Item(names.get(i).html(),Float.parseFloat(fix_price),symbols.get(i).html().charAt(0)));
+                char value=symbols.get(i).html().charAt(0);
+                items.add(new Item(names.get(i).html(),Float.parseFloat(fix_price),value));
             }
         }
 
@@ -139,7 +152,8 @@ public class Type
             {
                 String fix_price = prices.get(i).html().replace(".","").replace(",",".").replace("<b>EUR</b>","").replace("\"","");
                 String fix_name = names.get(i).html().replace("<span class=\"newly\">Nuova inserzione</span>","");
-                items.add(new Item(fix_name,Float.parseFloat(fix_price),'€'));
+                char value = '€';
+                items.add(new Item(fix_name,Float.parseFloat(fix_price),value));
             }
         }
 
@@ -153,15 +167,39 @@ public class Type
             {
                 Elements singleprice = prices.get(i).select("h6.Atoms__TextAtom--sbt-text-atom-L2hvbWUv").select("h6.Atoms__TextAtom--token-h6-L2hvbWUv").select("h6.size-normal").select("h6.Atoms__TextAtom--weight-semibold-L2hvbWUv").select("h6.AdElements__ItemPrice--price-L2hvbWUv");
                 String fix_price="0";
+                char value = 'U';
                 if(singleprice.size()>0)
-                    fix_price = singleprice.get(0).html().replace(".","").replace(",",".").replace("€","");
+                {
+                    fix_price = singleprice.get(0).html().replace(".", "").replace(",", ".").replace("€", "");
+                    value='€';
+                }
                 if(names.get(i).html().contains(research) || names.get(i).html().contains(research.substring(1)) || names.get(i).html().contains(research.substring(0,research.length()-1)))
-                    items.add(new Item(names.get(i).html(),Float.parseFloat(fix_price),'€'));
+                    items.add(new Item(names.get(i).html(),Float.parseFloat(fix_price),value));
             }
         }
 
 
-        /*Facebook*/
+        /*KIJIJI*/
+        else if(typename.equals("Kijiji") || typename.equals("KIJIJI") || typename.equals("K"))
+        {
+            Document doc = Kijiji(research);
+            Elements names = doc.select("a.cta");
+            Elements prices = doc.select("div.item-content").select("h4.price");
+
+            for(int i=0;i<names.size() && i<prices.size();i++)
+            {
+                    String fix_price="0";
+                    char value = 'U';
+                    if(!prices.get(i).html().contains("Contatta l'utente"))
+                    {
+                        fix_price = prices.get(i).html().replace(".","").replace(",",".").replace("€","");
+                        value=prices.get(i).html().charAt(prices.get(i).html().length()-1);
+                    }
+                    items.add(new Item(names.get(i).html(),Float.parseFloat(fix_price),value));
+            }
+        }
+
+        /*Facebook ERRATA*/
         else if(typename.equals("facebook") || typename.equals("Facebook") || typename.equals("FB") ||typename.equals("fb") || typename.equals("facebook marketplace") ||typename.equals("fb marketplace") || typename.equals("FACEBOOK"))
         {
             Document doc = Facebook(research);
@@ -212,6 +250,16 @@ public class Type
                 .get();
     }
 
+    private Document Kijiji(String filter) throws IOException
+    {
+        filter.replace("","+");
+        return  (Jsoup.connect("https://www.kijiji.it/"+filter+"/")
+                .data("entryPoint", "sb")
+                .userAgent("Chrome")
+                .method(Connection.Method.GET)
+                .execute()).parse();
+    }
+
     private Document Facebook(String filter) throws IOException
     {
         //Solo torino
@@ -222,6 +270,8 @@ public class Type
                 .method(Connection.Method.GET)
                 .execute()).parse();
     }
+
+
 
     public void setResearch(String research)
     {

@@ -31,8 +31,9 @@ public class Chooser extends AuthThread
     {
         try
         {
-           List<Item> items = param.getSecond().getItems();
-           for(Item single : items)
+           List<Item> FirstItems = param.getFirst().getItems();
+           List<Item> SecondItems = param.getSecond().getItems();
+           for(Item single : SecondItems)
            {
                System.out.println(single.toString());
            }
