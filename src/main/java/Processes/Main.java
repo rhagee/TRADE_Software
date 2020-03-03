@@ -35,7 +35,7 @@ public class Main
         List<Chooser> workers = new ArrayList<>();
         List<Parameters> couples = new ArrayList<>();
 
-        couples.add(new Parameters(new Type("Amazon"),new Type("eBay"),"Surface"));
+        couples.add(new Parameters(new Type("Amazon"),new Type("EBay"),"Surface"));
 
         for(int i=0;i<couples.size();i++)
         {
