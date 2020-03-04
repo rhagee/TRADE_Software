@@ -157,9 +157,13 @@ public class Type
                                  .select("span.a-price-whole");
             Elements symbols = doc.select("span.a-price")
                                   .select("span.a-price-symbol");
-            Elements links = doc.select("a.a-link-normal")
+            Elements links = doc.select("h2.a-size-mini")
+                                .select("h2.a-spacing-none")
+                                .select("h2.a-color-base")
+                                .select("h2.s-line-clamp-2")
+                                .select("a.a-link-normal")
                                 .select("a.a-text-normal");
-
+            System.out.println(names.size()+ " "+ links.size());
             for(int i=0;i<names.size() && i<prices.size();i++)
             {
                 String fix_price = FixPrice(prices.get(i).html());
