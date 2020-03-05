@@ -35,9 +35,9 @@ public class Main
         List<Chooser> workers = new ArrayList<>();
         List<Parameters> couples = new ArrayList<>();
 
-        couples.add(new Parameters(new Type("Amazon"),new Type("Kijiji"),"Surface"));
+        couples.add(new Parameters(new Type("EBay"),new Type("Amazon"),"Surface Go","Cover,Pellicola,Adattatore,Penna,Custodia,Protezione"));//AGGIUNGE un Thread con 2 siti ,  1 Ricerca e le parole da filtrare dalla ricerca
 
-        for(int i=0;i<couples.size();i++)
+        for(int i=0;i<couples.size();i++) //CREA TUTTI I THREAD
         {
             workers.add(new Chooser(couples.get(i)));
             workers.get(i).start();
